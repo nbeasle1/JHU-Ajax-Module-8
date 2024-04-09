@@ -23,6 +23,7 @@
     }
 
 
+    
     NarrowItDownController.$inject = ['MenuSearchService'];
     function NarrowItDownController(MenuSearchService) {
         var narrowctrl = this;
