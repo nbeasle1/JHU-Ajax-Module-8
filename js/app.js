@@ -19,7 +19,6 @@
             },
         };
 
-        
         return ddo;
     }
 
@@ -39,7 +38,6 @@
             });
         }
 
-        // TODO : move this to controller?
         narrowctrl.removeItem = function (itemIndex) {
             narrowctrl.found.splice(itemIndex, 1);
         }
@@ -74,15 +72,12 @@
                                 foundItems.push(result.data[shortName].menu_items[i]);
                             }
                         }
-                        
                     }
 
                     return foundItems;
                 }
             )
-
         };
     }
-
 
 })();
