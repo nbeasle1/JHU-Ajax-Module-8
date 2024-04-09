@@ -4,22 +4,45 @@
 
     angular.module('NarrowItDownApp', [])
 
-    //controllers
+    
     .controller('NarrowItDownController', NarrowItDownController)
-    .service('MenuSearchService', MenuSearchService);
+    .service('MenuSearchService', MenuSearchService)
+    .directive('foundItems', FoundItemsDirective);
+
+    // so this errs bc 2 directives request isolate scope on same element
+    function FoundItemsDirective() {
+        var ddo = {
+            templateUrl: 'foundItems.html',
+            scope: {
+                items: '<',
+                onRemove: '&'
+            },
+        };
+
+        
+        return ddo;
+    }
+
 
     NarrowItDownController.$inject = ['MenuSearchService'];
     function NarrowItDownController(MenuSearchService) {
         var narrowctrl = this;
-        
 
-        // this needs to be called from the HTML to get the param (i think?)
-        var promise = MenuSearchService.getMatchedMenuItems("chicken");
+        narrowctrl.displaySearchedItems = function (searchTerm) {
+            var promise = MenuSearchService.getMatchedMenuItems(searchTerm);
 
-        
+            promise.then(function (response) {
+                narrowctrl.found = response;
+            })
+            .catch(function (error) {
+                console.log("Error retrieving data " + error);
+            });
+        }
 
-
-
+        // TODO : move this to controller?
+        narrowctrl.removeItem = function (itemIndex) {
+            narrowctrl.found.splice(itemIndex, 1);
+        }
     }
 
     MenuSearchService.$inject = ['$http'];
@@ -48,7 +71,7 @@
                             var comparisonString = result.data[shortName].menu_items[i].description;
 
                             if(comparisonString.includes(searchTerm)) {
-                                foundItems.push(result.data[shortName].menu_items[i].description);
+                                foundItems.push(result.data[shortName].menu_items[i]);
                             }
                         }
                         
@@ -59,10 +82,7 @@
             )
 
         };
-
-        
     }
-
 
 
 })();
